@@ -14,11 +14,11 @@ public class Model {
     private List<String> data;
 
     private Model() {
-        String[] arrayData = {"Steve",
+        String[] arrayData = {"Dave",
                 "Stuart",
                 "Kevin",
                 "Bob",
-                "Steve",
+                "Dave",
                 "Stuart",
                 "Kevin"};
         data = new ArrayList<>();

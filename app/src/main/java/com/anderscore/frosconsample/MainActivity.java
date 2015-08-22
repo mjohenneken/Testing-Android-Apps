@@ -8,46 +8,68 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.Collections;
+import java.util.List;
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends ListActivity implements IView {
 
 
-    private TextView steveCount;
-    private Button addButton;
+    private TextView DaveCount;
     private ArrayAdapter<String> adapter;
+
+    private IPresenter presenter;
+
+    public MainActivity() {
+        presenter = new Presenter();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        initViews();
+
+        presenter.init(this);
+    }
+
+    private void initViews() {
         setContentView(R.layout.activity_main);
 
-        steveCount = new TextView(this);
-        steveCount.setTextAppearance(this, R.style.Base_TextAppearance_AppCompat_Display1);
-        getListView().addHeaderView(steveCount);
+        DaveCount = new TextView(this);
+        DaveCount.setTextAppearance(this, R.style.Base_TextAppearance_AppCompat_Display1);
+        getListView().addHeaderView(DaveCount);
 
-        addButton = new Button(this);
+        Button addButton = new Button(this);
         addButton.setTextAppearance(this, R.style.TextAppearance_AppCompat_Button);
-        addButton.setText("Add Steve");
+        addButton.setText("Add Dave");
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Model.getInstance().addItem("Steve");
-                adapter.notifyDataSetChanged();
-                updateSteveCount();
+                presenter.addDaveToList();
             }
         });
         getListView().addFooterView(addButton);
 
-        updateSteveCount();
 
-        adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, Model.getInstance().getData());
+    }
+
+    @Override
+    public void updateList() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void updateList(List<String> data) {
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, data);
         setListAdapter(adapter);
     }
 
-    private void updateSteveCount() {
-        int count = Collections.frequency(Model.getInstance().getData(), "Steve");
-        steveCount.setText("Steve kommt " + count + " mal vor!");
+    @Override
+    public void updateDaveCount(int count) {
+        DaveCount.setText("Dave kommt " + count + " mal vor!");
+    }
+
+    public void setPresenter(IPresenter presenter) {
+        this.presenter = presenter;
     }
 
 
